@@ -1,0 +1,49 @@
+do 
+	local quest = helper.QuestDefinition();
+	quest.id = 'PondFarm'
+	quest.visual = "Orc"
+	quest.kindFlag = "Combat"
+	quest.encounters = {'combat_pondFarm'}
+	quest.tags = {"COMBAT","EASY","TERRAIN_WOODS","TERRAIN_PLAINS"}
+	quest.canAbandonCombat = || false
+
+	quest.AddCinematic("onReach", cinematicMapHelper.Cinematic({
+									cinematicMapHelper.Instant(function ()
+										if(cinematicMapHelper.PartyStars() >= config.starLimit.normal())
+	                                    then
+			                                cinematicMapHelper.CurrentQuestStatus().context.SetObject("diffVariant", "1")
+			                            else 
+			                            	cinematicMapHelper.CurrentQuestStatus().context.SetObject("diffVariant", "0")
+			                            end
+										cinematicMapHelper.CurrentQuestStatus().context.SetObject("variant", cinematicMapHelper.RandomItem({"1","2","3","4"}))
+										cinematicMapHelper.CurrentQuestStatus().encounters = quest.encounters
+									end)
+								}))										
+
+	quest.AddCinematic("onWinCombat", cinematicMapHelper.Cinematic({
+								cinematicMapHelper.ShowRewards("MAP_RESULT_TITLE_VICTORY", || quest.results.success, || {complex= cinematicMapHelper.PartyStars() >= config.starLimit.normal()}),
+							}))
+
+	quest.AddCinematic("onLeaveCombat", cinematicMapHelper.Cinematic({
+								cinematicMapHelper.ShowRewards("MAP_RESULT_TITLE_LEAVE", || quest.results.leaveCombat, || {}),
+							}))
+
+
+	quest.results = {
+		success = cinematicMapHelper.Result(|params| {
+			
+			
+			{type="guild.attribute", kind = "loot", amount = params.complex and config.rewards.loot.mid() or config.rewards.loot.low()},
+			{type="giveXP", amount = params.complex and config.rewards.starXp.mid() or config.rewards.starXp.low()},
+			{type="checkInjuries"},
+			{type="item", loot = cinematicMapHelper.StoreContentFromLootTable({
+				{type = "itemList", id = params.complex and "midHealing" or "lowHealing", quantity = || config.rewards.itemChance.mid() and 1 or 0, slot = 1},
+			})}
+		}),
+		leaveCombat = cinematicMapHelper.Result(|params| {
+			{type="darkness", amount = config.rewards.darkness.leave()},
+			{type="checkInjuries"}
+		}),
+	}
+	helper.AddQuest(quest)
+end
