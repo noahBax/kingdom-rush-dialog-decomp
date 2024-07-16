@@ -1,2 +1,6 @@
 .mypy_cache
 out.txt
+Lib
+Scripts
+pyvenv.cfg
+dialog/__pycache__/
