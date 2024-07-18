@@ -6,8 +6,52 @@ from dialog.dialog import Dialog
 
 event_folder = './Sorted/Events'
 
-def consume_function(file_contents: TextIOWrapper):
+
+def consume_simple_function(text: str) -> str:
+    # Cut out function part
+    t = re.sub(r'^\|\| .*\(\d*,\s*["\']', '', text, 1)
+    t = re.sub(r'["\']\),?\s*$', '', t, 1)
     
+    return t
+
+
+def resolve_property(entry: str, file_contents: TextIOWrapper) -> str:
+
+    # Remove the trailing comma
+    if entry[-1] == ',':
+        entry = entry[:-1]
+
+    # || __R(3, "Unveil the spell!")
+    if re.search(r'^\|\|[^"\']*\(\d*,\s*["\']', entry):     # Basic
+        t = re.sub(r'^\|\|[^"\']*\(\d*,\s*["\']', '', entry, 1)
+        t = re.sub(r'["\']\),?\s*$', '', t, 1)
+        return t
+    
+    # || "mapCinematicId"
+    elif re.search(r'^\|\|\s*["\']', entry):                # Simple
+        t = re.sub(r'^\|\|\s*["\']', '', entry, 1)
+        t = re.sub(r'["\'],?\s*$', '', t)
+        return t
+    
+    elif re.search(r'^function', entry):                    # Complex
+        # Consume lines until we hit end
+        t = entry
+        while True:
+            line = file_contents.readline().strip()
+            t += '\n' + line
+            if re.match(r'end,?', line):
+                return t
+    
+    # |t| t("ct_craft")
+    elif re.search(r'^\|[^|]+\|\s*', entry)
+    
+    # "diceChallenge"
+    elif re.match(r'^["\'].*["\'],?$', entry):              # Normal string
+        return entry[1:-1]
+        
+    else:                                                   # Unhandled
+        raise Exception(f'Unhandled function type: {entry}')
+
 
 def consume_child(file_contents: TextIOWrapper):
     child_obj = {
@@ -28,18 +72,27 @@ def consume_child(file_contents: TextIOWrapper):
         props: tuple[str, str] = line.split('=', 1)
         props = [p.strip for p in props]
 
-    for line in file_contents:
         if props[0] == 'type':                              # type
             t = props[1].split('.', 1)[1]
             child_obj.type = t[:-1]
+
 
 def consume_children(file_contents: TextIOWrapper):
     children_obj = {}
 
     open_curlies = 1
 
+
 def consume_dialog(file_contents: TextIOWrapper):
     dialog_obj = {}
+
+    resolvable_properties = [
+        'type',
+        'narrator',
+        'text',
+        'icon',
+        'who',
+    ]
 
     open_curlies = 2
     # Skip 2 lines
@@ -50,59 +103,55 @@ def consume_dialog(file_contents: TextIOWrapper):
 
         if line == '}':
             open_curlies -= 1
-            break
+            if open_curlies == 0:
+                break
+            else:
+                continue
         
         props: tuple[str, str] = line.split('=', 1)
         props = [p.strip for p in props]
 
-        if props[0] == 'type':                              # type
-            t = props[1].split('.', 1)[1]
-            dialog_obj.type = t[:-1]
-
-        elif props[0] == 'narrator':                        # narrator
-            t = re.sub(r'^\|\|\s*', '', props[1], 1)
-            dialog_obj.narrator = t[:-1]
-
-        elif props[0] == 'text':                            # text
-            t = re.sub(r'^\|\|\s*', '', props[1], 1)
-            dialog_obj.text = t[:-1]
-
-        elif props[0] == 'icon':                            # icon
-            t = re.sub(r'^\|\|\s*', '', props[1], 1)
-            dialog_obj.icon = t[:-1]
-
-        elif props[0] == 'who':                             # who
-            t = re.sub(r'^\|\|\s*', '', props[1], 1)
-            dialog_obj.who = t[:-1]
-
+        if props[0] in resolvable_properties:
+            dialog_obj[props[0]] = resolve_property(props[1])
+        
         
     return dialog_obj
+
 
 def consume_array(array_string: str):
     # Passed just the stripped contents
     array_string = array_string[1:-1]
     return re.split('["\']\s*,\s*[\'"]', array_string)
 
+
 def consume_quest(file_contents: TextIOWrapper):
     quest_obj = {}
+
+    resolvable_properties = [
+        'quest.id',
+        'quest.visual',
+        'quest.kindFlag',
+    ]
+
+    array_properties = [
+        'quest.encounters',
+        'quest.tags',
+    ]
     
     for line in file_contents:
         line = line.strip()
-        props = line.split('=', 1)
+        props: tuple[str, str] = line.split('=', 1)
         props = [p.strip for p in props]
 
-        if props[0] == 'quest.id':                          # id
-            quest_obj.id = props[1]
-        elif props[0] == 'quest.visual':                    # visual
-            quest_obj.visual = props[1]
-        elif props[0] == 'quest.kindFlag':                  # kindFlag
-            quest_obj.kindFlag = props[1]
-        elif props[0] == 'quest.encounters':                # encounters
-            quest_obj.encounters = consume_array(props[1])
-        elif props[0] == 'quest.tags':                      # tags
-            quest_obj.tags = consume_array(props[1])
-        elif props[0] == 'local theDialog':                 # dialog
+        if props[0] in resolvable_properties:
+            quest_obj[props[0]] = resolvable_properties(props[1])
+
+        elif props[0] in array_properties:
+            quest_obj[props[0]] = consume_array(props[1])
+
+        elif props[0] == 'local theDialog':
             quest_obj.dialog_obj = consume_dialog(file_contents)
+
 
 for file in os.listdir(event_folder):
 
