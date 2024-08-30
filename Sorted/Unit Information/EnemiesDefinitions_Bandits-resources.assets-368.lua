@@ -215,7 +215,6 @@
 
 		"skills"
 		{
-			
 			"1" "pillager_ground_slam"
  		}
 
