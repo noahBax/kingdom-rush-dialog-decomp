@@ -998,8 +998,8 @@
 "SKILL_regson_eldritch_heal_trait_DESCRIPTION_DATA" = "Healing: <style="buff">{level} {icon#statHP}</style>"
 
 "SKILL_regson_eldritch_syphon_trait_NAME" = "Eldritch Syphon"
-"SKILL_regson_eldritch_syphon_trait_DESCRIPTION" = "Resists some magic damage. Whenever he is hit with magic damage, enters Eldritch State (used to trigger EPIC effects)."
-"SKILL_regson_eldritch_syphon_trait_DESCRIPTION_DATA" = "Damage reduction: <style="buff">{reduction} {icon#damageMagical}</style>\nState duration: <style="highlight">{duration} {icon#turns}</style>"
+"SKILL_regson_eldritch_syphon_trait_DESCRIPTION" = "Resists some magic damage. Whenever he is hit with magic damage, gains extra armor and enters Eldritch State (used to trigger EPIC effects)."
+"SKILL_regson_eldritch_syphon_trait_DESCRIPTION_DATA" = "Damage reduction: <style="buff">{reduction} {icon#damageMagical}</style>\nExtra armor: <style="buff">+{2} {icon#statArmor}</style>\nState duration: <style="highlight">{duration} {icon#turns}</style>"
 
 
 
