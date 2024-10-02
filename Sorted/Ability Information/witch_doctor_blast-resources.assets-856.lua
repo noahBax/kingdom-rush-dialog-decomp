@@ -69,24 +69,82 @@
             {
                 "Conditional"
                 {
-                    "Condition"     "isOnState(%TARGET, #DEAD) && not(isOnState(%TARGET, #PROP))"
-
-                    "Actions" 
+                    "Condition"         "isOnState(%TARGET, #DEAD)"
+                    "Actions"
                     {
-                        "Heal"
-                        {
-                            "Target"        "%SOURCE"
-                            "HealAmount"    "%epicHeal"
-                        }
-
-                        "AttachEffect"
-                        {
-                            "EffectName"    "HealingFXMega"
-                            "Target"        "%SOURCE"
-                        }
-
                         "MarkHitLegendary"
                         {
+                        }
+
+                        "SetToContext"
+                        {
+                            "Context"       "currentContext()"
+                            "Key"           "#explodeDelay"
+                            "Value"         "randomBetween(1,1)"
+                            "Type"          "FIELD_FLOAT"
+                        }
+
+                        "StartLogicTick"
+                        {
+                            "Time"          "%explodeDelay"
+                            "TickType"      "FX"
+                            "Position"      "unitPosition(%SOURCE)"
+                        }
+
+                        "Delay"
+                        {
+                            "Time"          "%explodeDelay"
+                            "Actions"
+                            {
+                                "AttachEffect"
+                                {
+                                    "EffectName"    "AbyssalBlastHitFXMega"
+                                    "Target"        "unitPosition(%TARGET, #Chest)"
+                                }
+
+                                "ActOnTargets"
+                                {
+                                    "Target"
+                                    {
+                                        "Center"        "unitPosition(%TARGET)"
+                                        "Radius"        "%epicRadius"
+                                        "Teams"         "TEAM_ALL"
+                                    }
+
+                                    "IteratorName"      "#newTarget"
+                                
+                                    "Actions"    
+                                    {
+                                        "Hit"
+                                        {
+                                            "Target"        "%newTarget"
+                                            "EffectName"    "AbyssalBlastHitFXMega" 
+                                            "Tags"          "stringList(#ENVIRONMENTAL, #AOE)"
+
+                                            "InitActions"
+                                            {
+                                                "AddDamage"
+                                                {
+                                                    "Type"        "DAMAGE_PHYSICAL"
+                                                    "Damage"      "%epicDamage"
+                                                }
+                                            }
+
+                                            "Actions"
+                                            {
+                                               
+                                               "ApplyModifier"
+                                                {
+                                                    "ModifierName"      "modifier_burning"
+                                                    "Target"            "%HITTARGET"
+                                                    "Duration"          "%epicDuration"
+                                                    "Refresh"           "1"
+                                                }
+                                           }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

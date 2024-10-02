@@ -2305,7 +2305,7 @@
 		{
 			"1" "heavy_strike"
 			"11" "oportunity_attack"
-			}
+		}
 
 		"skillProgression"
 			{

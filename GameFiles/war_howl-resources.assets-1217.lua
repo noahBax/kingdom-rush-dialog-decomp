@@ -14,7 +14,7 @@
 
     "AnimationID"   "SpellCastB"
     "CastFXId" "FireballCastFXMega"
-    "Icon" "ShieldWall"
+    "Icon" "WarHowl"
 
     "AbilityAOETeamFilter" "TEAM_ENEMY"
     "AbilityAOERange" "%aoeRadius"
