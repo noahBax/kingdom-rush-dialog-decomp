@@ -35,7 +35,7 @@
             "Icon" "KeenFocus"
             "IconPriority" "25"
 
-            "OnTurnFinished"
+            ""
             {
                "RemoveModifier"
                 {
