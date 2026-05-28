@@ -160,14 +160,6 @@
                                 }
                             }
                         }
-
-                        "SetToContext"
-                        {
-                            "Context"        "projectileContext(%projectile)"
-                            "Key"            "#controllerUnit"
-                            "Value"          "%UNIT"
-                            "Type"           "FIELD_OBJECT"
-                        }
                     }
                 }
 

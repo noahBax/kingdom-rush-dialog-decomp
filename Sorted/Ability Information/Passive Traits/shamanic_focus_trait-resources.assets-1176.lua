@@ -38,7 +38,7 @@
                         "RemoveModifier"
                         {
                             "ModifierName"    "shamanic_focus_bonus_modifier"
-                            "Target"         "%TARGET"
+                            "Target"          "%TARGET"
                         }
                     }
                 }

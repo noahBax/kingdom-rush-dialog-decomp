@@ -64,7 +64,7 @@
             "Target"               "%TARGET"
             "SourcePos"             "unitPosition(%SOURCE, #CastPoint)"
             "TargetPos"             "unitPosition(%TARGET)"
-            "Model" "BombardierGrenade"
+            "Model"                 "BombardierGrenade"
 
             "Params" 
             {
@@ -159,7 +159,7 @@
             }
         }
 
-       "ActOnTargets"
+        "ActOnTargets"
         {
             "Target"
             {
@@ -175,9 +175,9 @@
             {
                 "Hit"
                 {
-                    "Target" "%newTarget"
-                    "EffectName" "FireballHitFXMega" 
-                    "Tags" "stringList(#PROJECTILE, #AOE)"
+                    "Target"        "%newTarget"
+                    "EffectName"    "FireballHitFXMega" 
+                    "Tags"          "stringList(#PROJECTILE, #AOE)"
 
                     "InitActions"
                     {
@@ -190,29 +190,6 @@
                         "Conditional"
                         {
                             "Condition" "isOnState(%HITTARGET, #IMMOBILIZED)"
-
-                            
-                            
-                              
-                               
-                                
-                                 
-                               
-
-                                
-                                
-                                
-                            
-
-                            
-                            
-                               
-                                
-                                  
-                                   
-                                
-                            
-
                             "Actions" 
                             {
                                 "AddDamage"
